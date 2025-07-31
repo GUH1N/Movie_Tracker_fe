@@ -1,10 +1,10 @@
 'use server'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
-import { createClient } from '@/lib/utils/supabase/server.supabase'
+import { createServerSupabaseClient } from '@/lib/utils/supabase/server.supabase'
 
 export async function signInWithGoogle() {
-    const supabase = await createClient()
+    const supabase = await createServerSupabaseClient()
 
     const redirectUrl = `${process.env.NEXT_PUBLIC_BASE_URL}`
 
@@ -14,7 +14,6 @@ export async function signInWithGoogle() {
             redirectTo: redirectUrl,
         },
     })
-    console.log(data)
 
     if (error) {
         console.error('Google sign-in error:', error)
@@ -26,12 +25,11 @@ export async function signInWithGoogle() {
 }
 
 export async function login(formData: FormData) {
-    const supabase = await createClient()
+    const supabase = await createServerSupabaseClient()
     const data = {
         email: formData.get('email') as string,
         password: formData.get('password') as string,
     }
-    console.log('data', data)
     const { error } = await supabase.auth.signInWithPassword(data)
     if (error) {
         redirect('/error')
@@ -41,7 +39,7 @@ export async function login(formData: FormData) {
 }
 
 export async function signup(formData: FormData) {
-    const supabase = await createClient()
+    const supabase = await createServerSupabaseClient()
     const data = {
         email: formData.get('email') as string,
         password: formData.get('password') as string,

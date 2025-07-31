@@ -6,13 +6,13 @@ export async function GET(request: Request) {
     const url = new URL(request.url)
     const code = url.searchParams.get('code')
     if (!code) {
-        return NextResponse.redirect(new URL('/', request.url))
+        return NextResponse.redirect('/')
     }
 
-    // Create a NextResponse so we can set cookies
-    const response = NextResponse.redirect(new URL('/', request.url))
+    // Create a NextResponse to set cookies onto the response
+    const response = NextResponse.redirect('/')
 
-    // Use the response object for setting cookies
+    // Create Supabase client passing cookie handlers with cookie setting on the response
     const supabase = createServerClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -30,13 +30,13 @@ export async function GET(request: Request) {
         }
     )
 
-    // Exchange the code for a session
+    // Exchange the OAuth code for session, which sets cookies
     const { error } = await supabase.auth.exchangeCodeForSession(code)
     if (error) {
         console.error('Error exchanging code for session:', error)
-        return NextResponse.redirect(new URL('/error', request.url))
+        return NextResponse.redirect('/error')
     }
 
-    // Return response with any cookies set
+    // Return response with cookies set
     return response
 }

@@ -79,7 +79,7 @@ const {register, formState: { errors } } = useForm<{name: string, email: string,
                                         />
                                     </svg>
                                     Continue with Google
-                                </Button>Netlify
+                                </Button>
                             </form>
                         </div>
 
